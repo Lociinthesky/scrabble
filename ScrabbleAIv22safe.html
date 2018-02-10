@@ -1,0 +1,2146 @@
+
+
+<!DOCTYPE html>
+
+<html>
+<head><title>Scrabble AI2</title>
+  <script src="dictionaries.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Abel|Comfortaa|Exo+2|Lato|Rajdhani" rel="stylesheet">
+<style type="text/css">
+
+#handLettersTable{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.handLetters {
+  height:60px;
+  width:53px;
+}
+
+#x7y7{
+  background-color: transparent;
+}
+
+#userScore{
+  position: absolute;
+  top: 15%;
+  left: 2%;
+}
+
+#vs{
+   position: absolute;
+  top: 22%;
+  left: 2%;
+}
+#buttons{
+  position: absolute;
+  top: 3%;
+  right:2%;
+  margin-bottom:30px;
+}
+
+.buttons{
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+#legalAlert{
+  background-color: black;
+  border: 1px solid white;
+  text-align: center;
+  width: 250px;
+}
+
+#macScore{
+  position: absolute;
+  top: 50%;
+  left: 2%;
+}
+
+
+.board{
+  /*background-color: #d1f8ff;*/
+  background-color: #19377a;
+  background-image: url("https://www.transparenttextures.com/patterns/otis-redding.png");
+/*    background-image: url("https://www.transparenttextures.com/patterns/cardboard-flat.png");*/
+ /* background-image: url("https://www.transparenttextures.com/patterns/old-husks.png");*/
+/*  font-family: 'Lato', sans-serif;*/
+/*font-family: 'Exo 2', sans-serif;*/
+font-family: 'Rajdhani', sans-serif;
+/*font-family: 'Comfortaa', cursive;*/
+  font-weight: bold;
+  font-size: 15px;
+  text-align: center;
+  /*border: 1px solid black;*/
+/*  border-radius: 1px;*/
+  height:36px;
+  width:32px;
+  /*border-collapse: collapse;*/
+  }
+
+.oddChecker{
+  background-color: #2A277a;
+}
+
+.boardPlayed {
+  background-color: transparent;
+}
+/*.tripleWord{
+box-shadow: 0px 0px 15px 8px purple;
+
+}*/
+
+.tripleWordSwitch{
+box-shadow: 0px 0px 15px 8px purple;
+}
+.tripleWord{
+box-shadow: 0px 0px 5px 2px rgba(128, 0, 128, .6);
+background-color: transparent;
+}
+
+/*.tripleLetter{
+box-shadow: 0px 0px 15px 8px turquoise;
+}
+*/
+.tripleLetterSwitch{
+box-shadow: 0px 0px 15px 8px turquoise;
+}
+.tripleLetter{
+box-shadow: 0px 0px 5px 2px rgba(64, 224, 208, .5);
+background-color: transparent;
+}
+ 
+/*.doubleLetter{
+box-shadow: 0px 0px 15px 8px lightgreen;
+}*/
+
+.doubleLetterSwitch{
+box-shadow: 0px 0px 15px 8px lightgreen;
+}
+
+.doubleLetter{
+box-shadow: 0px 0px 5px 2px rgba(144, 238 ,144, .5);
+background-color: transparent;
+}
+
+/*.doubleWord{
+box-shadow: 0px 0px 15px 8px pink;  
+}
+*/
+.doubleWordSwitch{
+box-shadow: 0px 0px 15px 8px pink;
+}
+
+.doubleWord{
+box-shadow: 0px 0px 5px 2px rgba(255, 192, 203, .5);
+background-color: transparent;
+}
+
+
+#test{
+  margin-left: auto;
+  margin-right: auto;
+ /* border: 2px solid #221011;*/
+  border-radius: 2px;
+  border-spacing: 4px;
+  box-shadow: 0px 0px 6px 2px #222222;
+  height: 75%;
+}
+#tableDiv{ 
+  margin-left: 300px;
+  margin-right: 400px;
+  border: 2px solid #221011;
+  border-radius: 2px;
+  box-shadow: 0px 2px 4px 2px #222222;
+  height: 75%;
+}
+
+body{
+  color: black;
+  background-color: darkgray;
+  background-image: url("https://www.transparenttextures.com/patterns/dark-tire.png");
+ /* background-image: url("https://www.transparenttextures.com/patterns/cardboard-flat.png");*/
+/* background-image: url("https://www.transparenttextures.com/patterns/old-husks.png");*/
+}
+</style>
+</head>
+<body>
+  <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+  <script type = "text/javascript" 
+    src = "https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+  <script type="text/javascript">
+    var randomHandFlag = false;
+    var decentHandFlag = true;
+    var goodHandFlag = false;
+    var greatHandFlag = false;
+    var highestTripleScoreYet = 0;
+  var bestTripleWordYet;
+var tripleWord = false;
+var doubleWord = false;  
+var legalAlert = '';
+var turn = -1;
+var bestWordYet;
+var z = 0;
+var shuffledLetterBag = ["r", "x", "i", "v", "t", "i", "t", "e", "f", "w", "o", "o", "d", "v", "i", "a", "c", "d", "j", "e", "e", "w", "c", "p", "i", "n", "a", "e", "s", "g", "o", "q", "l", "b", "a", "a", "r", "e", "k", "a", "o", "d", "y", "n", "p", "i", "l", "s", "m", "e", "t", "o", "u", "s", "e", "y", "i", "l", "n", "a", "r", "e", "h", "z", "n", "e", "l", "h", "g", "b", "f", "u", "i", "e", "r", "n", "d", "g", "a", "e", "t", "a", "r", "i", "t", "o", "e", "u", "s", "o", "i", "n", "a", "u", "t", "m", "r", "o"];
+var unshuffledletterBag = 'aaaaaaaaabbccddddeeeeeeeeeeeeffggghhiiiiiiiiijkllllmmnnnnnnooooooooppqrrrrrrssssttttttuuuuvvwwxyyz'.split('');
+var pointValue = 0;
+var playedWordsAndValues = [];
+var orientation = 'horizontal';
+var boardLength = 15
+var wordPoints = 0;
+var sevenLetters = 'yyerady'
+var eight12flag = false;
+var letterBag = [];
+var macHand = [];
+var userHand = [];
+var macScore = 0;
+var userScore = 0;
+var userTurn;
+var activeLetter;
+var shuffledMultiplierHash = {};
+var gatekeeper = {};
+var userR = -1;
+var userC = -1;
+var userOrientation = 'horizontal';
+var userWord = '';
+var gameOn = true;
+var row;
+var wordString;
+var wordList = [];
+var indexList = [];
+var spaceList = [];
+var arrayConcat;
+var playableWords = [];
+var sortMe = [];
+var scoredWord;
+var boardLength = 15;
+var current;
+var tempIndices = [];
+var handLettersMap = new Map();
+var newCoordinates = [];
+var userRow = [];
+var tempIndex;
+var handLettersArray = ['-','-','-','-','-','-','-'];
+var highestScoreYet = 0;
+var gateKeeper = {};
+var activeLetter = [];
+var turnCount = 0;
+var firstTurn = true;
+var stealC = -1;
+var stealR = -1;
+var stealSpaces = new Map();
+var rand = Array.from(Array(boardLength).keys());
+var stealSpaceRandomNumsR = Array.from(Array(boardLength).keys());
+stealSpaceRandomNumsR.splice(Math.floor(boardLength/2),1);
+var stealSpaceRandomNumsC = Array.from(Array(boardLength).keys());
+stealSpaceRandomNumsC.splice(Math.floor(boardLength/2),1);
+var stealPoolR = shuffle(stealSpaceRandomNumsR);
+var stealPoolC = shuffle(stealSpaceRandomNumsC);
+var stealMode = false;
+var letters = {
+  'a': {'value': 1, 'quant': 9, 'remaining': 9},
+  'b': {'value': 3, 'quant': 2, 'remaining': 2},
+  'c': {'value': 3, 'quant': 2, 'remaining': 2},
+  'd': {'value': 2, 'quant': 4, 'remaining': 4},
+  'e': {'value': 1, 'quant': 12, 'remaining': 12},
+  'f': {'value': 4, 'quant': 2, 'remaining': 2},
+  'g': {'value': 2, 'quant': 3, 'remaining': 3},
+  'h': {'value': 4, 'quant': 2, 'remaining': 2},
+  'i': {'value': 1, 'quant': 9, 'remaining': 9},
+  'j': {'value': 8, 'quant': 1, 'remaining': 1},
+  'k': {'value': 5, 'quant': 1, 'remaining': 1},
+  'l': {'value': 1, 'quant': 4, 'remaining': 4},
+  'm': {'value': 3, 'quant': 2, 'remaining': 2},
+  'n': {'value': 1, 'quant': 6, 'remaining': 6},
+  'o': {'value': 1, 'quant': 8, 'remaining': 8},
+  'p': {'value': 3, 'quant': 2, 'remaining': 2},
+  'q': {'value': 10, 'quant': 1, 'remaining': 1},
+  'r': {'value': 1, 'quant': 6, 'remaining': 6},
+  's': {'value': 1, 'quant': 4, 'remaining': 4},
+  't': {'value': 1, 'quant': 6, 'remaining': 6},
+  'u': {'value': 1, 'quant': 4, 'remaining': 4},
+  'v': {'value': 4, 'quant': 2, 'remaining': 2},
+  'w': {'value': 4, 'quant': 2, 'remaining': 2},
+  'x': {'value': 8, 'quant': 1, 'remaining': 1},
+  'y': {'value': 4, 'quant': 2, 'remaining': 2},
+  'z': {'value': 10, 'quant': 1, 'remaining': 1}
+};
+
+
+//  '_': {'value': 0, 'quant': 2, 'remaining': 2}
+var letterBank = {
+  'a': 1,
+  'b': 4,
+  'c': 4,
+  'd': 2,
+  'e': 1,
+  'f': 4,
+  'g': 2,
+  'h': 3,
+  'i': 1,
+  'j': 10,
+  'k': 5,
+  'l': 2,
+  'm': 4,
+  'n': 1,
+  'o': 1,
+  'p': 4,
+  'q': 10,
+  'r': 1,
+  's': 1,
+  't': 1,
+  'u': 2,
+  'v': 5,
+  'w': 4,  
+  'x': 8,
+  'y': 3,
+  'z': 10
+};
+//'_': 0
+
+
+
+
+
+var multiplierHash = {
+'0': {'0': 'tripleWord', '3': 'doubleLetter', '7': 'tripleWord', '11': 'doubleLetter', '14': 'tripleWord'},
+'1': {'1': 'doubleWord', '5': 'tripleLetter', '9': 'tripleLetter', '13': 'doubleWord'},
+'2': {'2': 'doubleWord', '6': 'doubleLetter', '8': 'doubleLetter', '12': 'doubleWord'},
+'3': {'0': 'doubleLetter', '3': 'doubleWord', '7': 'doubleLetter', '11': 'doubleWord', '14': 'doubleLetter'},
+'4': {'4': 'doubleWord', '10': 'doubleWord'},
+'5': {'1': 'tripleLetter', '5': 'tripleLetter', '9': 'tripleLetter', '13': 'tripleLetter'},
+'6': {'2': 'doubleLetter', '6': 'doubleLetter', '8': 'doubleLetter', '12': 'doubleLetter'},
+'7': {'0': 'tripleWord', '3': 'doubleLetter', '11': 'doubleLetter', '14': 'tripleWord'},
+'8': {'2': 'doubleLetter', '6': 'doubleLetter', '8': 'doubleLetter', '12': 'doubleLetter'},
+'9': {'1': 'tripleLetter', '5': 'tripleLetter', '9': 'tripleLetter', '13': 'tripleLetter'},
+'10': {'4': 'doubleWord', '10': 'doubleWord'},
+'11': {'0': 'doubleLetter', '3': 'doubleWord', '7': 'doubleLetter', '11': 'doubleWord', '14': 'doubleLetter'},
+'12': {'2': 'doubleWord', '6': 'doubleLetter', '8': 'doubleLetter', '12': 'doubleWord'},
+'13': {'1': 'doubleWord', '5': 'tripleLetter', '9': 'tripleLetter', '13': 'doubleWord'},
+'14': {'0': 'tripleWord', '3': 'doubleLetter', '7': 'tripleWord', '11': 'doubleLetter', '14': 'tripleWord'}
+};
+
+var multiplierColors = {
+'0': {'0': 'purple', '3': 'lightgreen', '7': 'purple', '11': 'lightgreen', '14': 'purple'},
+'1': {'1': 'pink', '5': 'turquoise', '9': 'turquoise', '13': 'pink'},
+'2': {'2': 'pink', '6': 'lightgreen', '8': 'lightgreen', '12': 'pink'},
+'3': {'0': 'lightgreen', '3': 'pink', '7': 'lightgreen', '11': 'pink', '14': 'lightgreen'},
+'4': {'4': 'pink', '10': 'pink'},
+'5': {'1': 'turquoise', '5': 'turquoise', '9': 'turquoise', '13': 'turquoise'},
+'6': {'2': 'lightgreen', '6': 'lightgreen', '8': 'lightgreen', '12': 'lightgreen'},
+'7': {'0': 'purple', '3': 'lightgreen', '11': 'lightgreen', '14': 'purple'},
+'8': {'2': 'lightgreen', '6': 'lightgreen', '8': 'lightgreen', '12': 'lightgreen'},
+'9': {'1': 'turquoise', '5': 'turquoise', '9': 'turquoise', '13': 'turquoise'},
+'10': {'4': 'pink', '10': 'pink'},
+'11': {'0': 'lightgreen', '3': 'pink', '7': 'lightgreen', '11': 'pink', '14': 'lightgreen'},
+'12': {'2': 'pink', '6': 'lightgreen', '8': 'lightgreen', '12': 'pink'},
+'13': {'1': 'pink', '5': 'turquoise', '9': 'turquoise', '13': 'pink'},
+'14': {'0': 'purple', '3': 'lightgreen', '7': 'purple', '11': 'lightgreen', '14': 'purple'}
+};
+
+var multiplierRgba = {
+'0': {'0': 'rgba(128, 0, 128', '3': 'rgba(144, 238 ,144', '7': 'rgba(128, 0, 128', '11': 'rgba(144, 238 ,144', '14': 'rgba(128, 0, 128'},
+'1': {'1': 'rgba(255, 192, 203', '5': 'rgba(64, 224, 208', '9': 'rgba(64, 224, 208', '13': 'rgba(255, 192, 203'},
+'2': {'2': 'rgba(255, 192, 203', '6': 'rgba(144, 238 ,144', '8': 'rgba(144, 238 ,144', '12': 'rgba(255, 192, 203'},
+'3': {'0': 'rgba(144, 238 ,144', '3': 'rgba(255, 192, 203', '7': 'rgba(144, 238 ,144', '11': 'rgba(255, 192, 203', '14': 'rgba(144, 238 ,144'},
+'4': {'4': 'rgba(255, 192, 203', '10': 'rgba(255, 192, 203'},
+'5': {'1': 'rgba(64, 224, 208', '5': 'rgba(64, 224, 208', '9': 'rgba(64, 224, 208', '13': 'rgba(64, 224, 208'},
+'6': {'2': 'rgba(144, 238 ,144', '6': 'rgba(144, 238 ,144', '8': 'rgba(144, 238 ,144', '12': 'rgba(144, 238 ,144'},
+'7': {'0': 'rgba(128, 0, 128', '3': 'rgba(144, 238 ,144', '11': 'rgba(144, 238 ,144', '14': 'rgba(128, 0, 128'},
+'8': {'2': 'rgba(144, 238 ,144', '6': 'rgba(144, 238 ,144', '8': 'rgba(144, 238 ,144', '12': 'rgba(144, 238 ,144'},
+'9': {'1': 'rgba(64, 224, 208', '5': 'rgba(64, 224, 208', '9': 'rgba(64, 224, 208', '13': 'rgba(64, 224, 208'},
+'10': {'4': 'rgba(255, 192, 203', '10': 'rgba(255, 192, 203'},
+'11': {'0': 'rgba(144, 238 ,144', '3': 'rgba(255, 192, 203', '7': 'rgba(144, 238 ,144', '11': 'rgba(255, 192, 203', '14': 'rgba(144, 238 ,144'},
+'12': {'2': 'rgba(255, 192, 203', '6': 'rgba(144, 238 ,144', '8': 'rgba(144, 238 ,144', '12': 'rgba(255, 192, 203'},
+'13': {'1': 'rgba(255, 192, 203', '5': 'rgba(64, 224, 208', '9': 'rgba(64, 224, 208', '13': 'rgba(255, 192, 203'},
+'14': {'0': 'rgba(128, 0, 128', '3': 'rgba(144, 238 ,144', '7': 'rgba(128, 0, 128', '11': 'rgba(144, 238 ,144', '14': 'rgba(128, 0, 128'}
+};
+
+var multiplierHashPlaceholder = multiplierHash;
+
+var masterBoard = [
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+];
+
+
+
+var workingBoard = [
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '], 
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '],
+[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+];
+// var workingBoard = masterBoard;
+// workingBoard = JSON.parse(JSON.stringify(workingBoard));
+// // var masterBoard = [
+// [' ',' ',' ',' ',' ',' ','d','o','n','u','t','s',' ',' ',' '], 
+// ['d','i','c','k','s',' ','e','n',' ',' ',' ','i','m','p','s'], 
+// [' ',' ',' ',' ',' ','i','b','e','x',' ',' ','s',' ',' ',' '], 
+// [' ',' ',' ',' ','t',' ','u',' ',' ',' ',' ','t',' ',' ',' '], 
+// [' ',' ','k','a','r','a','t','e',' ',' ',' ','e','v','e','r'], 
+// [' ',' ',' ','n','a',' ',' ','n','i','p',' ','r',' ',' ',' '], 
+// [' ',' ',' ',' ','n',' ',' ','e',' ',' ',' ',' ',' ',' ',' '], 
+// [' ',' ',' ',' ','s',' ',' ','r','o','b','u','s','t',' ',' '], 
+// [' ',' ',' ',' ','i',' ',' ','g',' ','e',' ',' ',' ',' ',' '], 
+// [' ',' ',' ',' ','t','o',' ','y',' ','r',' ',' ',' ',' ',' '], 
+// [' ',' ',' ',' ',' ','f',' ',' ',' ','r','o','a','m',' ',' '], 
+// [' ','d','a','u','n','t',' ',' ','b','y',' ',' ','a',' ',' '], 
+// [' ',' ',' ',' ',' ','e',' ',' ','a',' ',' ','s','p','i','n'], 
+// [' ',' ',' ',' ',' ','n',' ',' ','g',' ',' ',' ',' ',' ',' '], 
+// [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+// ];
+
+// function emptify(d){
+//   var copy = JSON.parse(JSON.stringify(d));
+//     for (var key in copy){
+//      copy[key] = [];
+//     }
+//   return copy;
+// }
+
+// function buildTwoLevelDictionary(dictObj){
+//   var emptyCopy = JSON.parse(JSON.stringify(dictObj));
+//   for (var key in dictObj){
+//     emptyCopy[key] = emptify(dictObj)
+//     for (let word of dictObj[key]){
+//       if (emptyCopy[key][word[1]] === undefined){
+//         emptyCopy[key][word[1]] = [word];
+//       } else {
+//         emptyCopy[key][word[1]].push(word);
+//       }   
+//     }
+//   }
+//   return emptyCopy;
+// }
+
+
+
+function legalMessage(row, col){
+  var firstLetter;
+  var secondLetter;
+  let checkRow = getWords(workingBoard[row]);
+  let checkCol = getWords(verticalize(workingBoard)[col]);
+  var hScore = 0;
+  checkRow = checkRow.concat(checkCol);
+  for (let word of checkRow){
+    if (word.length > 1){
+      firstLetter = word[0];
+      secondLetter = word[1];
+      if (twoLevelDictionary[firstLetter][secondLetter
+        ].indexOf(word) < 0){
+
+        legalAlert = `"${word.toUpperCase()}" is not a word.`
+        return legalAlert;
+      }
+    }
+  }
+  hScore = hypotheticalScore(workingBoard, masterBoard);
+  legalAlert = `Play "${userWord.toUpperCase()}" for ${hScore} points.`;
+  return legalAlert;
+}
+
+
+$(document).ready(function(){
+
+ // $('#test tr').children(':odd').css({'background-color': '#19377a'});
+ $('#test tr').children(':odd').addClass('oddChecker');
+  standardizeMultipliers();
+});
+$(document).ready(function(){
+  $(".handLetters").mouseenter(function(){
+    $(this).animate('top', '-10px');
+  });
+});
+
+function activateLetter(num){
+  //check if we just clicked on a space (useful when returning tiles to rack)
+  var clickedOnSpace = false;
+  if ($(`#handLetters${num}`).html() == '') {
+  
+    clickedOnSpace = true;
+  }
+  //we already have an active letter, send it back to rack
+  if (activeLetter.length > 0) {
+     $(`#handLetters${activeLetter[1]}`).html(`<img src=${activeLetter[0].toUpperCase()}.gif style="width:100%;height:100%" draggable="true" ondragstart="drag(event)">`);
+   activeLetter = []; 
+  }
+  //if we didn't click on a space, we clicked on a letter, let's make it active
+  if (!clickedOnSpace) {
+  activeLetter = [userHand[num], num];
+  //current = userHand[num];
+  $(`#handLetters${num}`).html('');
+  }
+}
+
+
+function depositLetter(id){
+  var n = (id).match(/\d+/g);
+  
+ // if ($(`#${id}`).html()){
+ if (workingBoard[n[0]][n[1]] !== ' ') {
+    //this space is occupied
+  //tempIndices.push(n);
+  
+  //if it doesn't exist in masterBoard, this is a tile the user just played and we can take action
+     if (masterBoard[n[0]][n[1]] === ' ') {
+   var num = handLettersMap.get(id);
+    if (activeLetter.length > 0) {
+      //REPLACE
+    //send this clicked-on tile back to rack
+    $(`#handLetters${num}`).html(`<img src=${userHand[num].toUpperCase()}.gif style="width:100%;height:100%" draggable="true" ondragstart="drag(event)">`);
+    //add active tile to the space and update wB
+    $(`#${id}`).html(`<img src=${activeLetter[0].toUpperCase()}.gif style="width:100%;height:100%"  draggable="true" style="border: 2px solid black" align="center">`);
+    workingBoard[n[0]][n[1]] = activeLetter[0];
+    handLettersMap.delete(id);
+    handLettersMap.set(id, activeLetter[1])
+    //reset activeLetter
+    activeLetter = [];
+   }
+   else {
+     //make this the active letter again (PICK UP)
+     $(`#${id}`).html('');
+     workingBoard[n[0]][n[1]] = ' ';
+     activeLetter = [userHand[num], num];
+     handLettersMap.delete(id);
+    }
+  }
+  }else {    
+    if ( activeLetter.length > 0 ) {
+  //if we have an activeLetter, DEPOSIT
+      handLettersMap.set(id, activeLetter[1])
+      $(`#${id}`).html(`<img src=${activeLetter[0].toUpperCase()}.gif style="width:100%;height:100%"  draggable="true" align="center">`);
+    workingBoard[n[0]][n[1]] = activeLetter[0];
+      activeLetter = [];
+    } 
+  }
+  legalMessage(n[0],n[1]);
+$('#legalAlert').html(`${legalAlert}`);
+}
+
+
+function shuffleLetters(){
+  var tempHand = userHand.slice();
+  shuffle(tempHand);
+  $('.handLetters').html('');
+  for (var i = 0; i < 7; i++){
+    $(`#handLetters${i}`).append(`<img src=${tempHand[i].toUpperCase()}.gif style="width:100%;height:100%" draggable="true" ondragstart="drag(event)">`);
+  }
+  userHand = tempHand.slice();
+}
+
+
+function startGame(){
+  gameOn = true;
+  userTurn = true;
+  letterBag = shuffle(unshuffledletterBag);
+  //letterBag = shuffledLetterBag;
+  sevenLetters = letterBag.splice(0,7).join('');
+  userHand = letterBag.splice(0,7);
+  macScore = 0;
+  userScore = 0;
+  for (var i = 0; i < 7; i++){
+    $(`#handLetters${i}`).append(`<img src=${userHand[i].toUpperCase()}.gif style="width:100%;height:100%" draggable="true" ondragstart="drag(event)">`);
+  }
+}
+
+
+
+function defineUserOrientationAndGetNewCoordinates(){
+  var verticalTest = [];
+  for (var rr = 0; rr < workingBoard.length; rr++){
+    for (var cc = 0; cc < workingBoard.length; cc++){
+      if (workingBoard[rr][cc] !== masterBoard[rr][cc]){
+        newCoordinates.push([rr,cc]);
+        verticalTest.push(rr);
+      }
+    }
+  }
+  if (verticalTest.length===1){
+    userOrientation = 'unoriented';
+  }
+  if (verticalTest[0] === verticalTest[1]){
+    userOrientation = 'horizontal';
+  } else {
+    userOrientation = 'vertical';     
+  } 
+}
+
+
+function getUserRowUserR(coordinateList, wBoard, uOrientation){
+  if (uOrientation == 'vertical'){
+    userR = coordinateList[0][1];
+    var row = verticalize(wBoard)[userR];
+    tempIndex = coordinateList[0][0];
+  } else {
+    userR = coordinateList[0][0]
+    var row = wBoard[userR];
+    tempIndex = coordinateList[0][1];
+  }
+  return row;
+}
+
+
+function getUserWordUserC(row, startingIndex){
+  var wordReconstructor = [row[startingIndex]];
+  var idx = startingIndex-1;
+    while (idx >= 0 && row[idx] !== ' '){
+      wordReconstructor.unshift(row[idx]);
+      idx--;
+    }
+  userC = idx + 1;
+  idx = startingIndex + 1;
+    while (idx < boardLength && row[idx] !== ' '){ 
+      wordReconstructor.push(row[idx]);
+      idx++;
+    }
+  return wordReconstructor.join('');
+}
+
+
+
+
+
+
+
+
+
+function cullAndSwap(hand, bag, desiredRegex, discardRegex, quantity){
+    var handCullHolder = [];
+    var bagCullHolder = [];
+    var bagCull;
+    var handCull;
+      while (quantity > 0){
+        bagCull = bag.splice( bag.join('').search(desiredRegex),1);
+        handCull = hand.splice( hand.join('').search(discardRegex),1);
+        handCullHolder.push(handCull[0]);
+        bagCullHolder.push(bagCull[0]);
+        quantity--;
+      }
+    bag.concat(handCullHolder);
+    hand.concat(bagCullHolder);
+  }
+
+function quantifyAndRegulateHandGoodness(hand, bag){
+    var desired;
+    var joinHand = hand.join('');
+    var consInHand = joinHand.match(/[^aeiou]/gi)||[].length;
+    var vowsInHand = joinHand.match(/[aeiou]/gi)||[].length;
+    var vowRegExp = new RegExp(/[aeiou]/,'i');
+    var consRegExp = new RegExp(/[^aeiou]/,'i');
+  function greatHand(hand, bag){
+    if (vowsInHand < 3){
+      desired = 3 - vowsInHand;
+      cullAndSwap(hand, bag, vowRegExp, consRegExp, desired);
+    } else if (consInHand < 4){
+      desired = 4 - consInHand;
+      cullAndSwap(hand, bag, consRegExp, vowRegExp, desired);
+    }
+  }
+  function goodHand(hand, bag){
+    if (consInHand < 2){
+      cullAndSwap(hand, bag, consRegExp, vowsRegExp, 2);
+    } else if (vowsInHand < 2){
+      cullAndSwap(hand, bag, vowRegExp, consRegExp, 2);
+    }
+  }
+  function decentHand(hand, bag){
+    if (joinHand.search(vowRegExp) > -1){
+      if (joinHand.search(consRegExp) === -1 ){
+        cullAndSwap(hand, bag, consRegExp, vowRegExp, 1);
+      }
+    }else {
+      cullAndSwap(hand, bag, vowRegExp, ConsRegExp, 1);
+    }
+  }
+  if (!randomHandFlag){
+    if (decentHandFlag){
+      decentHand(hand, bag);
+    }
+    if (goodHandFlag){
+      goodHand(hand, bag);
+    }
+    if (greatHandFlag){
+      greatHand(hand, bag);
+    }
+  }
+}
+
+
+// function regulateHandGoodness(hand, bag){
+//   if (!randomHandFlag){
+//     if (decentHandFlag){
+//       decentHand(hand, bag);
+//     }
+//     if (goodHandFlag){
+//       goodHand(hand, bag);
+//     }
+//     if (greatHandFlag){
+//       greatHand(hand, bag);
+//     }
+//   }
+// }
+
+
+function replenishHand (hand, bag){
+  let clip = 7 - hand.length;
+  if ( clip ){
+   bag.splice(0,clip).forEach(letter => hand.push(letter))
+  }
+  //make sure this works....
+  if (userTurn){
+    for (var i = 0; i < hand.length; i++){
+      var newLetter = hand[i];
+      $(`#handLetters${i} img:last-child`).remove()
+      $(`#handLetters${i}`).append(`<img src=${newLetter.toUpperCase()}.gif style="width:100%;height:100%" draggable="true" ondragstart="drag(event)">`);
+      $(`#handLetters${i}`).show();
+    }
+  }
+  quantifyAndRegulateHandGoodness(hand, bag);
+  return hand;
+}
+    
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+  while (0 !== currentIndex) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
+}
+
+
+function userPlayWordFromHand(word, hand, userR, userC, userOrientation, masterBoard){
+  var count = 0;
+  for (let letter of word){
+    if (userOrientation === 'vertical'){
+      playRequiredBlank(userC+count, userR, letter, hand)      
+    } else {
+      playRequiredBlank(userR, userC+count, letter, hand)
+    }
+    count++;
+  } 
+  return masterBoard;
+}
+
+
+function userAnagrams(hand){
+  var temporaryHand = hand.slice();
+  if ($("#boardLetter").val()){
+    var boardLetter = $("#boardLetter").val();
+    temporaryHand.push(boardLetter);
+  }
+  var anagrams = boardLetter ?
+  dict.filter(word => isAnagram(temporaryHand, word) && word.includes(boardLetter)).sort((a,b)=>b.length - a.length) :
+  dict.filter(word => isAnagram(temporaryHand, word)).sort((a,b)=>b.length - a.length);
+  $("#anagrams").text(anagrams);
+}
+
+var override = false;
+function PCvPC(){ 
+  while (letterBag.length !== 0){
+ override = true;
+ AITurn();
+ override = false;
+ AITurn();
+}
+}
+
+
+function hypotheticalScore(workingBoard, masterBoard){
+  newCoordinates = [];
+  userTurn = true;
+  userWord = '';
+  userR = -1;
+  userC = -1;
+  defineUserOrientationAndGetNewCoordinates();
+  userRow = getUserRowUserR(newCoordinates, workingBoard, userOrientation);
+  userWord = getUserWordUserC(userRow, tempIndex);
+  return scoreWord(userWord, masterBoard, workingBoard, userOrientation, userR, userC);
+}
+
+
+function stealDetector(word, orientation, r, c){
+  var len = word.length;
+  for (let [row, col] of stealSpaces){
+    if (row == r){
+      if (orientation === 'vertical'){
+        return c === col;
+      } else {
+        return len > (col - c);
+      }
+    }
+    if (col == c){
+      if (orientation == 'horizontal'){
+        return r === row;
+      } else {
+        return len > (row - r);
+      } 
+    } 
+  }
+  return false;
+}
+
+
+function stealEnforcer(){
+ // alert (`userHand type ${typeof userHand} and sevenLetters ${typeof sevenLetters}`);
+  alert (`before steal: userHand ${userHand} and sevenLetters ${sevenLetters}`);
+  if (userTurn){
+    userHand.push(sevenLetters.splice(0,1));
+    alert (`after user steal: userHand ${userHand} and sevenLetters ${sevenLetters}`);
+  } else {
+    sevenLetters.push(userHand.splice(0,1));
+  }
+}
+
+
+function submit(workingBoard, masterBoard){
+  newCoordinates = [];
+  userTurn = true;
+  userWord = '';
+  userR = -1;
+  userC = -1;
+  defineUserOrientationAndGetNewCoordinates();
+  userRow = getUserRowUserR(newCoordinates, workingBoard, userOrientation);
+  userWord = getUserWordUserC(userRow, tempIndex);
+  var userTurnScore = scoreWord(userWord, masterBoard, workingBoard, userOrientation, userR, userC);
+  masterBoard = userPlayWordFromHand(userWord, userHand, userR, userC, userOrientation, masterBoard);
+  userHand = replenishHand(userHand, letterBag);
+  userScore += userTurnScore;
+   $('#userScore').html(`Mac: ${'<br>'}
+    This: ${userTurnScore} ${'<br>'}
+    Total: ${userScore}`);
+   firstTurn = false;
+   if (stealDetector(userWord, userOrientation, userR, userC)){
+      stealEnforcer();
+   }
+  AITurn()
+  firstTurn = false;
+}
+
+//ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  ME.  
+
+function rotate(array){
+  var outer = [];
+  var inner = [];
+  for (var i = 0 ; i < boardLength; i++){
+  if (i > 0){outer.push(inner);}
+  inner = [];
+    for (var j = 0; j < boardLength; j++){
+      inner.unshift(array[j][i]);
+    }
+  }
+  outer.push(inner);
+  return outer;
+}
+
+
+function rotateCC(array){
+  var outer = [];
+  var inner = [];
+  for (var i = 0 ; i < boardLength; i++){
+  if (i > 0){outer.unshift(inner);}
+  inner = [];
+    for (var j = 0; j < boardLength; j++){
+      inner.push(array[j][i]);
+    }
+  }
+  outer.unshift(inner);
+  return outer;
+}
+
+//MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. MAC.  MAC. MAC. 
+
+function getWords(row){
+  if (!row || !Array.isArray(row) || row.length === 0){
+    return [];
+  } else {
+   return row.join('').match(/\w+/gi) || [];
+  }
+}
+
+
+function getIndexList(wordString, wordList){
+  var idxList = [];
+  for (let w of wordList){
+    idxList.push(wordString.indexOf(w));
+  }
+  if (idxList.length === 0){
+    return [0];
+  }
+  return idxList;
+}
+
+
+function getSpaceList(indexList, wordList, boardLength, c){
+  var spaceBetween = [indexList[0]];
+    if (!Array.isArray(wordList) || !wordList || wordList == undefined ||
+      !Array.isArray(indexList) || !indexList || indexList == undefined){
+      return [0];
+    }
+  for (var i = 0, n = i; i < indexList.length; i++){
+    if (i === indexList.length -1){ 
+        spaceBetween.push((boardLength - indexList[i] - (wordList[i] ? wordList[i].length : 0 ) ) - c ); 
+      } else {
+      spaceBetween.push(indexList[i+1] - (indexList[i] + (wordList[i] ? wordList[i].length : 0 )) );
+      }
+    }
+  return spaceBetween || [0];
+}
+
+
+function constructRegex(spaceList, indexList, wordList, c){
+  var arrayConcat = [];
+  var regexConcat = `^\\w{0,${indexList[0]-1||0}}$`;
+  var startingSpaces = new RegExp(regexConcat); 
+  arrayConcat.push(startingSpaces);
+  regexConcat = '^';
+  for (var i = 0; i < indexList.length; i++){ 
+    regexConcat += wordList[i] ? `\\w{${spaceList[i]}}${wordList[i]}` : ``;
+    if (i === indexList.length-1){
+      var regExtra = new RegExp(regexConcat+`(\\w{0,${spaceList[spaceList.length-1]}})?$`);
+      arrayConcat.push(regExtra);
+      return arrayConcat || /\w{1,9}/;
+    }
+    var regExtra = new RegExp(regexConcat+`(\\w{0,${spaceList[i+1]-1}})?$`);
+    arrayConcat.push(regExtra);
+  }
+}
+
+
+function isAnagram(hand, otherWord){
+  var blanks = 0;
+  if (typeof hand !== 'string'){
+    hand = hand.join('');
+  }
+    for (let char of hand){
+      if (char == '_'){blanks++;}
+    }
+  let sevLetCopy = hand.split('');
+  var idx;
+   for (let char of otherWord){
+     idx = sevLetCopy.indexOf(char);
+    if (idx >= 0){
+      sevLetCopy.splice(idx,1);
+    } else {
+      blanks--;
+      if (blanks < 0){
+         return false;
+      }
+    }
+  }
+return true;
+}
+
+
+
+
+function getRowLetterCandidates (sevenLetters, fullRow){
+  var rowLetterCandidates = [];
+  let hand = typeof sevenLetters === 'string' ? sevenLetters : sevenLetters.join('');
+  var longWords = [];
+  var longHand = hand.slice();
+  var longTest = '';
+  var wordStreak = false;
+  var beenThereDoneThat = [];
+  let playedRowWords = getWords(fullRow);
+  for (let playedWord of playedRowWords){
+    if (playedWord.length < 2){
+      hand += playedWord;
+    } else {
+      longWords.push(playedWord);
+      longHand += playedWord;
+      longTest += longTest.length === 0 ? playedWord : ('|' + playedWord);
+    }
+  }
+  var longTestRegExp = new RegExp(longTest);
+  
+  for (let one of hand){
+    for (let two of hand){
+      if (beenThereDoneThat.indexOf(one+two) < 0){
+        beenThereDoneThat.push(one+two);
+        //following line unnecessary?
+        if (twoLevelDictionary[one][two].length !== 0){
+          for (let word of twoLevelDictionary[one][two]){
+            if (isAnagram(hand, word)){
+              rowLetterCandidates.push(word);
+            } else if (longTestRegExp.test(word) && isAnagram(longHand, word)){
+              rowLetterCandidates.push(word);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  for (let longWord of longWords){
+    wordStreak = false;
+    if (beenThereDoneThat.indexOf(longWords[0]+longWords[1]) < 0){
+    //following line unnecessary?
+      if (twoLevelDictionary[longWord[0]][longWord[1]].length !== 0){
+        for (let word of twoLevelDictionary[longWord[0]][longWord[1]]){
+          if (word.startsWith(longWord)){
+            if (!wordStreak){
+              wordStreak = true;
+            }
+            if (isAnagram(longHand, word)){
+              rowLetterCandidates.push(word);
+            }
+
+          } else if (wordStreak){
+              break;        
+          }
+        }
+      }
+    }
+  }
+  return rowLetterCandidates;
+}
+
+
+
+function getPlayableWords(rowLetterCandidates){
+
+
+  //inefficient
+
+
+  var playableWords = [];
+    var sevenLettersPlus = sevenLetters;
+    var theseWords = [];
+      for (var i = 0; i < arrayConcat.length; i++){
+        if ( i === 0){
+          for (let word of rowLetterCandidates){      
+            if (arrayConcat[i].test(word) && isAnagram(sevenLetters, word)){        
+                playableWords.push(word);             
+            }
+          }
+        } else {
+          sevenLettersPlus += wordList[i-1]; 
+          for (let word of rowLetterCandidates){   
+            if (arrayConcat[i].test(word) && isAnagram(sevenLettersPlus, word)){
+               playableWords.push(word);              
+            }
+          }
+        }       
+      }
+    return playableWords;
+}
+
+
+function rawScore(word){
+  return word.split('').
+  reduce((sum, letter) => sum + letters[letter].value, 0)
+}
+
+
+function verticalize (board){
+  let overArch = [];
+  for (var i = 0; i < board.length; i++){
+  let x = []
+  for (let array of board){
+    x.push(array[i])
+  }
+  overArch.push(x)
+  }
+  return overArch;
+}
+
+
+function scoreWord(word, oldBoard, newBoard, orientation, r, c){
+  tripleWord = false;
+  doubleWord = false;
+  if (userTurn && orientation == 'vertical'){ 
+    newBoard = verticalize(newBoard);
+    oldBoard = verticalize(oldBoard);
+  }
+  var thisVerticalScore = 0;
+  var totalVerticalScore = 0;
+  var horizontalScore = 0;
+  var thisValue = 0;
+  var verticalWordMultiplier = 1;
+  var horizontalWordMultiplier = 1;
+  var newWords = [];
+  var oldWords = [];
+  var newVertical = verticalize(newBoard);
+  var oldVertical = verticalize(oldBoard);
+  var disableVerticalScoring = false;
+  for (var i = c, end = c + word.length; i < end; i++){
+    disableVerticalScoring = false;
+    thisValue = letters[newBoard[r][i]].value;
+    thisVerticalScore = 0;
+    verticalWordMultiplier = 1;
+    newWords = getWords(newVertical[i]);
+    oldWords = getWords(oldVertical[i]);
+    if (newWords.length > oldWords.length){
+      disableVerticalScoring = true;
+    }
+    if (newVertical[i][r] === oldVertical[i][r]){
+      horizontalScore += thisValue;
+      continue;   
+    }else{
+      for (let word of oldWords){
+        if (newWords.indexOf(word) < 0){
+          thisVerticalScore += rawScore(word);
+        }
+      }
+    }
+    if (multiplierHash[r][i] !== 'undefined'){
+      if (multiplierHash[r][i] === 'doubleLetter'){
+        thisValue *= 2;
+      } else if (multiplierHash[r][i] === 'tripleLetter'){
+        thisValue *= 3;
+      } else if (multiplierHash[r][i] === 'doubleWord'){
+        doubleWord = true;
+        verticalWordMultiplier *= 2;
+        horizontalWordMultiplier *= 2;
+      } else if (multiplierHash[r][i] === 'tripleWord'){
+        tripleWord = true;
+        verticalWordMultiplier *= 3;
+        horizontalWordMultiplier *= 3;
+      }
+    }
+    horizontalScore += thisValue;
+    if (disableVerticalScoring === false){
+      totalVerticalScore += (thisVerticalScore + thisValue) * verticalWordMultiplier;
+    }
+  }
+  horizontalScore *= horizontalWordMultiplier;
+  if (userTurn && userOrientation == 'vertical'){ 
+    newBoard = verticalize(newBoard);
+    oldBoard = verticalize(oldBoard);
+  }
+  return horizontalScore + totalVerticalScore;
+}
+
+//.effect( "highlight", {color:"red"}, 4000 );
+function playedLetterCss(row, col, letta){
+  $(`#x${row}y${col}`).addClass('boardPlayed')
+  var color = userTurn ? 'white' : 'red';
+  //$(`#x${row}y${col}`).effect( "highlight", {color:'white'}, 1700 )
+  if (!multiplierHash[row][col]){
+    $(`#x${row}y${col}`).effect( "highlight", {color:color}, 5000 )
+  } else {
+    // $(`#x${row}y${col}`).append('<div id=multiplierHash[row][col]+"Switch"></div>')
+    $(`#x${row}y${col}`).addClass(multiplierHash[row][col]);
+    $(`#x${row}y${col}`).css({'border': '2px solid '+ multiplierColors[row][col]});
+    $(`#x${row}y${col}`).effect( "highlight", {color:multiplierColors[row][col]}, 3000 )
+    $(`#x${row}y${col}`).css({'border': 'none'});
+    $(`#x${row}y${col}`).animate({'background-color': 'transparent'}, 5000);
+  }
+  if (!userTurn){
+    $(`#x${row}y${col}`).html(`<img src=${letta.toUpperCase()}.gif style="width:100%;height:100%" draggable="true" align="center">`);
+    //$(`#x${row}y${col}`).append(`<div class="${multiplierHash[row][col]}Switch"></div>`)
+  //  $(".multiplierHash[row][col]+'Switch'").animate({opacity: .25}, 2000);
+
+  // $(`.${multiplierHash[row][col]}`).switchClass(multiplierHash[row][col], multiplierColors[row][col]+'Fade', 3000);
+  } else {
+  //  $(`#x${row}y${col}`).effect( "highlight", {color:multiplierColors[row][col] || "red"}, 3000 )
+    //$(`#x${row}y${col}`).animate({opacity: .25});
+   // $(`#x${row}y${col}`).append(`<div class="${multiplierHash[row][col]}Switch"></div>`)
+   // $(`#x${row}y${col}`).last().animate({opacity: .25});
+    //$(`.${multiplierHash[row][col]}`).animate({opacity: .25}, 2000);
+   // $(".multiplierHash[row][col]+'Switch'").animate({opacity: .25}, 2000);
+  // $(`.${multiplierHash[row][col]}`).switchClass(multiplierHash[row][col], multiplierColors[row][col]+'Fade', 3000);
+
+  }
+}
+
+
+function playRequiredBlank(row, col, letta, hand){
+  if (masterBoard[row][col] === ' '){
+    masterBoard[row][col] = letta;
+    workingBoard[row][col] = letta;
+    playedLetterCss(row, col, letta);
+    if (hand.indexOf(letta) < 0){
+       hand.splice(hand.indexOf('_'),1)
+    } else {
+       hand.splice(hand.indexOf(letta),1);
+    }    
+  }
+}
+
+
+function AIPlayWordFromHand(word, hand){
+  var hand = typeof sevenLetters === 'string' ? sevenLetters.split('') : sevenLetters;
+  var count = 0;
+  var r = word.r;
+  var c = word.c;
+  if (word.orientation === 'vertical'){
+    r = word.c;
+    c = word.r;
+  }
+  for (let letter of word.word){
+    if (word.orientation === 'vertical'){
+      playRequiredBlank(r+count, c, letter, hand)      
+    } else {
+      playRequiredBlank(r, c+count, letter, hand)
+    }
+    count++;
+  } 
+  sevenLetters = hand;
+  return masterBoard;
+}
+
+
+function scoreAndSaveWords(playableWords, tempWorkingBoard, r, c){
+  var testedWords = [];
+  var scoredWord = {};
+  var startingIndex = c;
+  var temptempWorkingBoard = tempWorkingBoard.slice();
+  var wordScore;
+  var bestWord;
+  var longPlayableWords = playableWords.filter(x => x.length >= getMinLength(masterBoard, r, c));
+
+  for (let word of longPlayableWords){
+    temptempWorkingBoard = tempWorkingBoard.slice();
+    if (word.length > boardLength - c){
+      continue;
+    }
+    startingIndex = c;
+    for (let letter of word){       
+      temptempWorkingBoard[r][startingIndex] = letter;       
+      startingIndex++;        
+    }
+    wordScore = scoreWord(word, masterBoard, temptempWorkingBoard, orientation, r, c)
+    if (isLegal(word, masterBoard, temptempWorkingBoard, r, c)){
+      if (wordScore >= highestScoreYet){
+      bestWordYet = {word, wordScore, orientation, r, c, tripleWord};
+      highestScoreYet = wordScore;
+        if (tripleWord){
+          bestTripleWordYet = bestWordYet;
+          highestTripleScoreYet = highestScoreYet;
+        }     
+      } else if (wordScore >= highestTripleScoreYet && tripleWord){
+        alert('tripCondition')
+        bestTripleWordYet = {word, wordScore, orientation, r, c, tripleWord};
+        highestTripleScoreYet = wordScore;
+      }
+    }  
+  }
+} 
+
+
+function orient(z) {
+  if(z) {
+  masterBoard = verticalize(masterBoard);
+  workingBoard = verticalize(workingBoard);
+  orientation = 'vertical';
+  }
+  else {
+  orientation = 'horizontal';
+  }
+}
+
+
+//we are looking for live spaces and their indices.  Live spaces have letters on them.
+//if the space behind it is !== ' ', there is no min length;
+// else if there are no live spaces [in the row slices] above or below it, min length is (relative) index of next letter in the row + 1.  
+// else the min length == the smaller index out of the two rows, +1.
+function getMinLength(masterBoard, r, c){
+var shortIndexUp = -1;
+var shortIndexDown = -1;
+var minLength = 0;
+  if (c !== 0){
+    if (/\w/.test(masterBoard[r][c-1])){
+      return minLength;
+    }
+  }     
+  shortIndexDown = (r === boardLength-1) ? -1 : 
+    masterBoard[r+1].slice(c).join('').search(/\w/);
+  shortindexUp = (r === 0) ? -1 : 
+    masterBoard[r-1].slice(c).join('').search(/\w/);
+  if (shortIndexDown < 0 && shortIndexUp < 0){
+    minLength = masterBoard[r].slice(c).join('').search(/\w/) > -1 ?
+    masterBoard[r].slice(c).join('').search(/\w/) + 1 :
+    1 ;
+    return minLength;
+  } else {
+    minLength = shortIndexDown < 0 ?
+    shortIndexUp +1 :
+    shortIndexUp < 0 ?
+    shortIndexDown + 1 :
+    shortIndexUp > shortIndexDown ?
+    shortIndexDown + 1 :
+    shortIndexUp +1 ;       
+  }
+  return minLength;
+}
+
+
+function validateLiveSpaces(word, masterBoard, workingBoard, r, c){
+  if (r !== boardLength-1){
+    if (/\w/.test(masterBoard[r+1].slice(c, c+word.length).join(''))){
+      return true;
+    }
+  }
+  if (r !== 0){
+    if (/\w/.test(masterBoard[r-1].slice(c, c+word.length).join(''))){
+      return true;
+    }
+  }
+  if ((c + word.length) < boardLength){
+    if (/\w/.test(masterBoard[r][c+word.length])){
+      return true;
+    }
+  }
+  if (c !== 0){
+    if (/\w/.test(masterBoard[r][c-1])){
+      return true;
+    }
+  }
+return false;
+}
+
+
+function validateThisRow(row){
+let rowWords = getWords(row) || [];
+  for (let word of rowWords){
+    if (word.length > 1 && twoLevelDictionary[word[0]][word[1]].indexOf(word) < 0){
+      return false;
+    }
+  }
+  return true;
+}
+
+
+function isLegal(word, masterBoard, workingBoard, r, c){
+  return (validateLiveSpaces(word, masterBoard, workingBoard, r, c) && validateAllRows(word, workingBoard, r, c));
+} 
+
+
+function validateAllRows(word, workingBoard, r, c){
+  if (validateThisRow(workingBoard[r]) === false){
+    return false;
+  } 
+  var nowVertical = verticalize(workingBoard);
+  for (var i = c, end = (c + word.length); i < end; i++){
+    if (validateThisRow(nowVertical[i]) === false){
+      return false;
+    }
+  }
+  return true;
+}
+
+  
+function AITurn(){
+  userTurn = false;     
+var bestWordYetList = [];
+  var wordScore = 0;
+  var scoredWords = [];
+  var sortMe = [];
+  var highestWord;
+  var sort = [];
+  var row;
+  var rowLetterCandidateWords;
+  var r = 0;
+  for (var z = 0; z < 2; z++){
+    if (z===1){
+      masterBoard = verticalize(masterBoard);
+      workingBoard = verticalize(workingBoard);
+      orientation = 'vertical'
+    }
+    for (var r = 0; r < boardLength; r++){
+      if (!override){
+        rowLetterCandidateWords = getRowLetterCandidates(sevenLetters, workingBoard[r]); 
+      } else {
+        rowLetterCandidateWords = getRowLetterCandidates(userHand, workingBoard[r]);
+      }   
+    //workingBoard[r];
+      while (r !== 14 && !(workingBoard[r].join(' ').replace(/\s+/,'')) &&
+        !(workingBoard[r+1].join(' ').replace(/\s+/,''))){
+        r++;    
+      }
+      for (var c = 0; c < boardLength; c++){
+        if (r === 14 && !(workingBoard[r].join(' ').replace(/\s+/,'')) &&
+         !(workingBoard[r-1].join(' ').replace(/\s+/,''))){ break; 
+        }
+        if (workingBoard[r][c] !== ' '){
+            continue;
+        }   
+        //efficiency checks
+        if ( (r > 0 && r < 14 && workingBoard[r-1].join('') === ' '.repeat(boardLength) && workingBoard[r+1].join('') === ' '.repeat(boardLength) ) || 
+          (r === 0 && workingBoard[1].join('') === ' '.repeat(boardLength)) || 
+          (r === 14 && workingBoard[13].join('') === ' '.repeat(boardLength)) ){ 
+            r++;
+            c = -1;
+            continue; 
+        }   
+      row = workingBoard[r].slice(c);
+      wordString = row.join('');
+      wordList = wordString.match(/\w+/gi) || [];
+      indexList = getIndexList(wordString, wordList);
+      spaceList = getSpaceList(indexList, wordList, boardLength, c);
+ 
+      // if (c % 3 === 0) { alert(`r: ${r}
+      // c: ${c}
+      // row: ${row}
+      // wordString: ${wordString}
+      // wordList: ${wordList} 
+      // indexList: ${indexList}
+      // spaceList: ${spaceList}`); }
+      arrayConcat = constructRegex(spaceList, indexList, wordList, c);
+
+      playableWords = getPlayableWords(rowLetterCandidateWords);  
+
+      scoreAndSaveWords(playableWords, JSON.parse(JSON.stringify(workingBoard)), r, c);
+      }
+    }
+  }
+var word = bestTripleWordYet || bestWordYet; 
+if (bestTripleWordYet && bestWordYet.wordScore != bestTripleWordYet.wordScore)
+alert(`word: ${JSON.stringify(bestWordYet)} 
+  tripleWord: ${JSON.stringify(bestTripleWordYet)}
+  sevenLetters: ${sevenLetters}`);
+masterBoard = verticalize(masterBoard);
+workingBoard = verticalize(workingBoard);
+if (!override){
+masterBoard = AIPlayWordFromHand(word, sevenLetters); 
+macScore += word.wordScore;
+sevenLetters = replenishHand(sevenLetters, letterBag);
+} else {
+masterBoard = AIPlayWordFromHand(word, sevenLetters); 
+userScore += word.wordScore;
+userHand = replenishHand(userHand, letterBag);
+}
+orientation = 'horizontal';
+r = 0;
+c = 0;
+if (!override){
+$('#macScore').text(`PC:
+${word.wordScore}, 
+${macScore}`);
+} else {
+$('#userScore').text(`Mac:
+${word.wordScore},  
+${userScore}`);
+}
+bestWordYet;
+bestTripleWordYet;
+highestTripleScoreYet = 0;
+highestScoreYet = 0;
+
+if (stealDetector(word, orientation, r, c)){
+      stealEnforcer();
+   }
+} 
+
+
+
+
+
+
+
+
+
+
+
+// function ExperimentalAITurn(){
+//   userTurn = false;     
+// var bestWordYetList = [];
+//   var wordScore = 0;
+//   var scoredWords = [];
+//   var sortMe = [];
+//   var highestWord;
+//   var sort = [];
+//   var row;
+//   var rowLetterCandidateWords;
+//   var r = 0;
+//   for (var z = 0; z < 2; z++){
+//     if (z===1){
+//       masterBoard = verticalize(masterBoard);
+//       workingBoard = verticalize(workingBoard);
+//       orientation = 'vertical'
+//     }
+//     for (var r = 0; r < boardLength; r++){
+//       if (!override){
+//         rowLetterCandidateWords = getRowLetterCandidates(sevenLetters, workingBoard[r]); 
+//       } else {
+//         rowLetterCandidateWords = getRowLetterCandidates(userHand, workingBoard[r]);
+//       }   
+//     //workingBoard[r];
+//       while (r !== 14 && !(workingBoard[r].join(' ').replace(/\s+/,'')) &&
+//         !(workingBoard[r+1].join(' ').replace(/\s+/,''))){
+//         r++;    
+//       }
+//       for (var c = 0; c < boardLength; c++){
+//         if (r === 14 && !(workingBoard[r].join(' ').replace(/\s+/,'')) &&
+//          !(workingBoard[r-1].join(' ').replace(/\s+/,''))){ break; 
+//         }
+//         if (workingBoard[r][c] !== ' '){
+//             continue;
+//         }   
+//         //efficiency checks
+//         if ( (r > 0 && r < 14 && workingBoard[r-1].join('') === ' '.repeat(boardLength) && workingBoard[r+1].join('') === ' '.repeat(boardLength) ) || 
+//           (r === 0 && workingBoard[1].join('') === ' '.repeat(boardLength)) || 
+//           (r === 14 && workingBoard[13].join('') === ' '.repeat(boardLength)) ){ 
+//             r++;
+//             c = -1;
+//             continue; 
+//         }
+//       row = workingBoard[r].slice(c);
+//       wordString = row.join('');
+//       wordList = wordString.match(/\w+/gi) || [];
+//       indexList = getIndexList(wordString, wordList);
+//       spaceList = getSpaceList(indexList, wordList, boardLength, c);
+//       // if (c % 3 === 0) { alert(`r: ${r}
+//       // c: ${c}
+//       // row: ${row}
+//       // wordString: ${wordString}
+//       // wordList: ${wordList} 
+//       // indexList: ${indexList}
+//       // spaceList: ${spaceList}`); }
+//       arrayConcat = constructRegex(spaceList, indexList, wordList, c);
+//       playableWords = getPlayableWords(rowLetterCandidateWords);  
+//       scoreAndSaveWords(playableWords, JSON.parse(JSON.stringify(workingBoard)), r, c);
+//       }
+//     }
+//   }
+// var word = bestWordYet;
+// bestWordYetList.push(word);
+// masterBoard = verticalize(masterBoard);
+// workingBoard = verticalize(workingBoard);
+// if (!override){
+// masterBoard = AIPlayWordFromHand(word, sevenLetters); 
+// macScore += word.wordScore;
+// sevenLetters = replenishHand(sevenLetters, letterBag);
+// } else {
+// masterBoard = AIPlayWordFromHand(word, sevenLetters); 
+// userScore += word.wordScore;
+// userHand = replenishHand(userHand, letterBag);
+// }
+// orientation = 'horizontal';
+// r = 0;
+// c = 0;
+// if (!override){
+// $('#macScore').text(`PC:
+// ${word.wordScore}, 
+// ${macScore}`);
+// } else {
+// $('#userScore').text(`Mac:
+// ${word.wordScore},  
+// ${userScore}`);
+// }
+// bestWordYet;
+// highestScoreYet = 0;
+
+// if (stealDetector(word, orientation, r, c)){
+//       stealEnforcer();
+//    }
+// } 
+
+// $(document).ready(function(){
+//   $('button').click(function(){
+//     $('.board').slideToggle();
+//   });
+// });
+
+</script>
+<!-- <button>Open Menu slideUp() and slideDown()</button> -->
+<table id="buttons">
+  <tr>
+    <td>
+      <input type="button" class="buttons" id="startGame" value="Start Game" onclick="startGame()">
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <input type="text" placeholder="+Adjacent board letters" id="boardLetter">
+      <input type="button" class="buttons" id="getAnagrams" value="Get Anagrams" onclick="userAnagrams(userHand)"><br> 
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <input type="button" class="buttons" id="randomMultipliers" value="Random Multipliers" onclick="randomizeMultipliers()">
+    </td>
+  </tr>
+<input type="button" class="buttons" id="computer" value="computer" onclick="AITurn()">
+  
+<!--   <tr>
+    <td>
+<input type="button" class="buttons" id="standardMultipliers" value="Standard Multipliers" onclick="standardizeMultipliers()">
+    </td>
+  </tr> -->
+    <tr>
+    <td>
+      <input type="text" id="stealSpaceRequest" placeholder="How many stealSpaces?">
+      <button type="button" onclick="addStealSpaces()">Add</button>
+    </td>
+  </tr>
+    <tr>
+    <td>
+      <input type="button" class="buttons" id="submit" value="submit" onclick="submit(workingBoard, masterBoard)">
+    </td>
+  </tr>
+</table>
+<!-- <div id="tableDiv" style="background-color: black"> -->
+<table id='test' style="background-color: black">
+<tr class='boardRow'> 
+<td id="x0y0" class='board' onclick="depositLetter('x0y0')"></td> 
+<td id="x0y1" class='board' onclick="depositLetter('x0y1')"></td> 
+<td id="x0y2" class='board' onclick="depositLetter('x0y2')"></td> 
+<td id="x0y3" class='board' onclick="depositLetter('x0y3')"></td> 
+<td id="x0y4" class='board' onclick="depositLetter('x0y4')"></td> 
+<td id="x0y5" class='board' onclick="depositLetter('x0y5')"></td> 
+<td id="x0y6" class='board' onclick="depositLetter('x0y6')"></td> 
+<td id="x0y7" class='board' onclick="depositLetter('x0y7')"></td> 
+<td id="x0y8" class='board' onclick="depositLetter('x0y8')"></td> 
+<td id="x0y9" class='board' onclick="depositLetter('x0y9')"></td> 
+<td id="x0y10" class='board' onclick="depositLetter('x0y10')"></td> 
+<td id="x0y11" class='board' onclick="depositLetter('x0y11')"></td> 
+<td id="x0y12" class='board' onclick="depositLetter('x0y12')"></td> 
+<td id="x0y13" class='board' onclick="depositLetter('x0y13')"></td> 
+<td id="x0y14" class='board' onclick="depositLetter('x0y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x1y0" class='board' onclick="depositLetter('x1y0')"></td> 
+<td id="x1y1" class='board' onclick="depositLetter('x1y1')"></td> 
+<td id="x1y2" class='board' onclick="depositLetter('x1y2')"></td> 
+<td id="x1y3" class='board' onclick="depositLetter('x1y3')"></td> 
+<td id="x1y4" class='board' onclick="depositLetter('x1y4')"></td> 
+<td id="x1y5" class='board' onclick="depositLetter('x1y5')"></td> 
+<td id="x1y6" class='board' onclick="depositLetter('x1y6')"></td> 
+<td id="x1y7" class='board' onclick="depositLetter('x1y7')"></td> 
+<td id="x1y8" class='board' onclick="depositLetter('x1y8')"></td> 
+<td id="x1y9" class='board' onclick="depositLetter('x1y9')"></td> 
+<td id="x1y10" class='board' onclick="depositLetter('x1y10')"></td> 
+<td id="x1y11" class='board' onclick="depositLetter('x1y11')"></td> 
+<td id="x1y12" class='board' onclick="depositLetter('x1y12')"></td> 
+<td id="x1y13" class='board' onclick="depositLetter('x1y13')"></td> 
+<td id="x1y14" class='board' onclick="depositLetter('x1y14')"></td> 
+</tr>
+<tr class='boardRow'> 
+<td id="x2y0" class='board' onclick="depositLetter('x2y0')"></td> 
+<td id="x2y1" class='board' onclick="depositLetter('x2y1')"></td> 
+<td id="x2y2" class='board' onclick="depositLetter('x2y2')"></td> 
+<td id="x2y3" class='board' onclick="depositLetter('x2y3')"></td> 
+<td id="x2y4" class='board' onclick="depositLetter('x2y4')"></td> 
+<td id="x2y5" class='board' onclick="depositLetter('x2y5')"></td> 
+<td id="x2y6" class='board' onclick="depositLetter('x2y6')"></td> 
+<td id="x2y7" class='board' onclick="depositLetter('x2y7')"></td> 
+<td id="x2y8" class='board' onclick="depositLetter('x2y8')"></td> 
+<td id="x2y9" class='board' onclick="depositLetter('x2y9')"></td> 
+<td id="x2y10" class='board' onclick="depositLetter('x2y10')"></td> 
+<td id="x2y11" class='board' onclick="depositLetter('x2y11')"></td> 
+<td id="x2y12" class='board' onclick="depositLetter('x2y12')"></td> 
+<td id="x2y13" class='board' onclick="depositLetter('x2y13')"></td> 
+<td id="x2y14" class='board' onclick="depositLetter('x2y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x3y0" class='board' onclick="depositLetter('x3y0')"></td> 
+<td id="x3y1" class='board' onclick="depositLetter('x3y1')"></td> 
+<td id="x3y2" class='board' onclick="depositLetter('x3y2')"></td> 
+<td id="x3y3" class='board' onclick="depositLetter('x3y3')"></td> 
+<td id="x3y4" class='board' onclick="depositLetter('x3y4')"></td> 
+<td id="x3y5" class='board' onclick="depositLetter('x3y5')"></td> 
+<td id="x3y6" class='board' onclick="depositLetter('x3y6')"></td> 
+<td id="x3y7" class='board' onclick="depositLetter('x3y7')"></td> 
+<td id="x3y8" class='board' onclick="depositLetter('x3y8')"></td> 
+<td id="x3y9" class='board' onclick="depositLetter('x3y9')"></td> 
+<td id="x3y10" class='board' onclick="depositLetter('x3y10')"></td> 
+<td id="x3y11" class='board' onclick="depositLetter('x3y11')"></td> 
+<td id="x3y12" class='board' onclick="depositLetter('x3y12')"></td> 
+<td id="x3y13" class='board' onclick="depositLetter('x3y13')"></td> 
+<td id="x3y14" class='board' onclick="depositLetter('x3y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x4y0" class='board' onclick="depositLetter('x4y0')"></td> 
+<td id="x4y1" class='board' onclick="depositLetter('x4y1')"></td> 
+<td id="x4y2" class='board' onclick="depositLetter('x4y2')"></td> 
+<td id="x4y3" class='board' onclick="depositLetter('x4y3')"></td> 
+<td id="x4y4" class='board' onclick="depositLetter('x4y4')"></td> 
+<td id="x4y5" class='board' onclick="depositLetter('x4y5')"></td> 
+<td id="x4y6" class='board' onclick="depositLetter('x4y6')"></td> 
+<td id="x4y7" class='board' onclick="depositLetter('x4y7')"></td> 
+<td id="x4y8" class='board' onclick="depositLetter('x4y8')"></td> 
+<td id="x4y9" class='board' onclick="depositLetter('x4y9')"></td> 
+<td id="x4y10" class='board' onclick="depositLetter('x4y10')"></td> 
+<td id="x4y11" class='board' onclick="depositLetter('x4y11')"></td> 
+<td id="x4y12" class='board' onclick="depositLetter('x4y12')"></td> 
+<td id="x4y13" class='board' onclick="depositLetter('x4y13')"></td> 
+<td id="x4y14" class='board' onclick="depositLetter('x4y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x5y0" class='board' onclick="depositLetter('x5y0')"></td> 
+<td id="x5y1" class='board' onclick="depositLetter('x5y1')"></td> 
+<td id="x5y2" class='board' onclick="depositLetter('x5y2')"></td> 
+<td id="x5y3" class='board' onclick="depositLetter('x5y3')"></td> 
+<td id="x5y4" class='board' onclick="depositLetter('x5y4')"></td> 
+<td id="x5y5" class='board' onclick="depositLetter('x5y5')"></td> 
+<td id="x5y6" class='board' onclick="depositLetter('x5y6')"></td> 
+<td id="x5y7" class='board' onclick="depositLetter('x5y7')"></td> 
+<td id="x5y8" class='board' onclick="depositLetter('x5y8')"></td> 
+<td id="x5y9" class='board' onclick="depositLetter('x5y9')"></td> 
+<td id="x5y10" class='board' onclick="depositLetter('x5y10')"></td> 
+<td id="x5y11" class='board' onclick="depositLetter('x5y11')"></td> 
+<td id="x5y12" class='board' onclick="depositLetter('x5y12')"></td> 
+<td id="x5y13" class='board' onclick="depositLetter('x5y13')"></td> 
+<td id="x5y14" class='board' onclick="depositLetter('x5y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x6y0" class='board' onclick="depositLetter('x6y0')"></td> 
+<td id="x6y1" class='board' onclick="depositLetter('x6y1')"></td> 
+<td id="x6y2" class='board' onclick="depositLetter('x6y2')"></td> 
+<td id="x6y3" class='board' onclick="depositLetter('x6y3')"></td> 
+<td id="x6y4" class='board' onclick="depositLetter('x6y4')"></td> 
+<td id="x6y5" class='board' onclick="depositLetter('x6y5')"></td> 
+<td id="x6y6" class='board' onclick="depositLetter('x6y6')"></td> 
+<td id="x6y7" class='board' onclick="depositLetter('x6y7')"></td> 
+<td id="x6y8" class='board' onclick="depositLetter('x6y8')"></td> 
+<td id="x6y9" class='board' onclick="depositLetter('x6y9')"></td> 
+<td id="x6y10" class='board' onclick="depositLetter('x6y10')"></td> 
+<td id="x6y11" class='board' onclick="depositLetter('x6y11')"></td> 
+<td id="x6y12" class='board' onclick="depositLetter('x6y12')"></td> 
+<td id="x6y13" class='board' onclick="depositLetter('x6y13')"></td> 
+<td id="x6y14" class='board' onclick="depositLetter('x6y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x7y0" class='board' onclick="depositLetter('x7y0')"></td> 
+<td id="x7y1" class='board' onclick="depositLetter('x7y1')"></td> 
+<td id="x7y2" class='board' onclick="depositLetter('x7y2')"></td> 
+<td id="x7y3" class='board' onclick="depositLetter('x7y3')"></td> 
+<td id="x7y4" class='board' onclick="depositLetter('x7y4')"></td> 
+<td id="x7y5" class='board' onclick="depositLetter('x7y5')"></td> 
+<td id="x7y6" class='board' onclick="depositLetter('x7y6')"></td> 
+<td id="x7y7" class='board' onclick="depositLetter('x7y7')"></td> 
+<td id="x7y8" class='board' onclick="depositLetter('x7y8')"></td> 
+<td id="x7y9" class='board' onclick="depositLetter('x7y9')"></td> 
+<td id="x7y10" class='board' onclick="depositLetter('x7y10')"></td> 
+<td id="x7y11" class='board' onclick="depositLetter('x7y11')"></td> 
+<td id="x7y12" class='board' onclick="depositLetter('x7y12')"></td> 
+<td id="x7y13" class='board' onclick="depositLetter('x7y13')"></td> 
+<td id="x7y14" class='board' onclick="depositLetter('x7y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x8y0" class='board' onclick="depositLetter('x8y0')"></td> 
+<td id="x8y1" class='board' onclick="depositLetter('x8y1')"></td> 
+<td id="x8y2" class='board' onclick="depositLetter('x8y2')"></td> 
+<td id="x8y3" class='board' onclick="depositLetter('x8y3')"></td> 
+<td id="x8y4" class='board' onclick="depositLetter('x8y4')"></td> 
+<td id="x8y5" class='board' onclick="depositLetter('x8y5')"></td> 
+<td id="x8y6" class='board' onclick="depositLetter('x8y6')"></td> 
+<td id="x8y7" class='board' onclick="depositLetter('x8y7')"></td> 
+<td id="x8y8" class='board' onclick="depositLetter('x8y8')"></td> 
+<td id="x8y9" class='board' onclick="depositLetter('x8y9')"></td> 
+<td id="x8y10" class='board' onclick="depositLetter('x8y10')"></td> 
+<td id="x8y11" class='board' onclick="depositLetter('x8y11')"></td> 
+<td id="x8y12" class='board' onclick="depositLetter('x8y12')"></td> 
+<td id="x8y13" class='board' onclick="depositLetter('x8y13')"></td> 
+<td id="x8y14" class='board' onclick="depositLetter('x8y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x9y0" class='board' onclick="depositLetter('x9y0')"></td> 
+<td id="x9y1" class='board' onclick="depositLetter('x9y1')"></td> 
+<td id="x9y2" class='board' onclick="depositLetter('x9y2')"></td> 
+<td id="x9y3" class='board' onclick="depositLetter('x9y3')"></td> 
+<td id="x9y4" class='board' onclick="depositLetter('x9y4')"></td> 
+<td id="x9y5" class='board' onclick="depositLetter('x9y5')"></td> 
+<td id="x9y6" class='board' onclick="depositLetter('x9y6')"></td> 
+<td id="x9y7" class='board' onclick="depositLetter('x9y7')"></td> 
+<td id="x9y8" class='board' onclick="depositLetter('x9y8')"></td> 
+<td id="x9y9" class='board' onclick="depositLetter('x9y9')"></td> 
+<td id="x9y10" class='board' onclick="depositLetter('x9y10')"></td> 
+<td id="x9y11" class='board' onclick="depositLetter('x9y11')"></td> 
+<td id="x9y12" class='board' onclick="depositLetter('x9y12')"></td> 
+<td id="x9y13" class='board' onclick="depositLetter('x9y13')"></td> 
+<td id="x9y14" class='board' onclick="depositLetter('x9y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x10y0" class='board' onclick="depositLetter('x10y0')"></td> 
+<td id="x10y1" class='board' onclick="depositLetter('x10y1')"></td> 
+<td id="x10y2" class='board' onclick="depositLetter('x10y2')"></td> 
+<td id="x10y3" class='board' onclick="depositLetter('x10y3')"></td> 
+<td id="x10y4" class='board' onclick="depositLetter('x10y4')"></td> 
+<td id="x10y5" class='board' onclick="depositLetter('x10y5')"></td> 
+<td id="x10y6" class='board' onclick="depositLetter('x10y6')"></td> 
+<td id="x10y7" class='board' onclick="depositLetter('x10y7')"></td> 
+<td id="x10y8" class='board' onclick="depositLetter('x10y8')"></td> 
+<td id="x10y9" class='board' onclick="depositLetter('x10y9')"></td> 
+<td id="x10y10" class='board' onclick="depositLetter('x10y10')"></td> 
+<td id="x10y11" class='board' onclick="depositLetter('x10y11')"></td> 
+<td id="x10y12" class='board' onclick="depositLetter('x10y12')"></td>  
+<td id="x10y13" class='board' onclick="depositLetter('x10y13')"></td> 
+<td id="x10y14" class='board' onclick="depositLetter('x10y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x11y0" class='board' onclick="depositLetter('x11y0')"></td> 
+<td id="x11y1" class='board' onclick="depositLetter('x11y1')"></td> 
+<td id="x11y2" class='board' onclick="depositLetter('x11y2')"></td> 
+<td id="x11y3" class='board' onclick="depositLetter('x11y3')"></td> 
+<td id="x11y4" class='board' onclick="depositLetter('x11y4')"></td> 
+<td id="x11y5" class='board' onclick="depositLetter('x11y5')"></td> 
+<td id="x11y6" class='board' onclick="depositLetter('x11y6')"></td> 
+<td id="x11y7" class='board' onclick="depositLetter('x11y7')"></td> 
+<td id="x11y8" class='board' onclick="depositLetter('x11y8')"></td> 
+<td id="x11y9" class='board' onclick="depositLetter('x11y9')"></td> 
+<td id="x11y10" class='board' onclick="depositLetter('x11y10')"></td> 
+<td id="x11y11" class='board' onclick="depositLetter('x11y11')"></td> 
+<td id="x11y12" class='board' onclick="depositLetter('x11y12')"></td> 
+<td id="x11y13" class='board' onclick="depositLetter('x11y13')"></td> 
+<td id="x11y14" class='board' onclick="depositLetter('x11y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x12y0" class='board' onclick="depositLetter('x12y0')"></td> 
+<td id="x12y1" class='board' onclick="depositLetter('x12y1')"></td> 
+<td id="x12y2" class='board' onclick="depositLetter('x12y2')"></td> 
+<td id="x12y3" class='board' onclick="depositLetter('x12y3')"></td> 
+<td id="x12y4" class='board' onclick="depositLetter('x12y4')"></td> 
+<td id="x12y5" class='board' onclick="depositLetter('x12y5')"></td> 
+<td id="x12y6" class='board' onclick="depositLetter('x12y6')"></td> 
+<td id="x12y7" class='board' onclick="depositLetter('x12y7')"></td> 
+<td id="x12y8" class='board' onclick="depositLetter('x12y8')"></td> 
+<td id="x12y9" class='board' onclick="depositLetter('x12y9')"></td> 
+<td id="x12y10" class='board' onclick="depositLetter('x12y10')"></td> 
+<td id="x12y11" class='board' onclick="depositLetter('x12y11')"></td> 
+<td id="x12y12" class='board' onclick="depositLetter('x12y12')"></td> 
+<td id="x12y13" class='board' onclick="depositLetter('x12y13')"></td> 
+<td id="x12y14" class='board' onclick="depositLetter('x12y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x13y0" class='board' onclick="depositLetter('x13y0')"></td> 
+<td id="x13y1" class='board' onclick="depositLetter('x13y1')"></td> 
+<td id="x13y2" class='board' onclick="depositLetter('x13y2')"></td> 
+<td id="x13y3" class='board' onclick="depositLetter('x13y3')"></td> 
+<td id="x13y4" class='board' onclick="depositLetter('x13y4')"></td> 
+<td id="x13y5" class='board' onclick="depositLetter('x13y5')"></td> 
+<td id="x13y6" class='board' onclick="depositLetter('x13y6')"></td> 
+<td id="x13y7" class='board' onclick="depositLetter('x13y7')"></td> 
+<td id="x13y8" class='board' onclick="depositLetter('x13y8')"></td> 
+<td id="x13y9" class='board' onclick="depositLetter('x13y9')"></td> 
+<td id="x13y10" class='board' onclick="depositLetter('x13y10')"></td> 
+<td id="x13y11" class='board' onclick="depositLetter('x13y11')"></td> 
+<td id="x13y12" class='board' onclick="depositLetter('x13y12')"></td> 
+<td id="x13y13" class='board' onclick="depositLetter('x13y13')"></td> 
+<td id="x13y14" class='board' onclick="depositLetter('x13y14')"></td> 
+
+</tr>
+<tr class='boardRow'> 
+<td id="x14y0" class='board' onclick="depositLetter('x14y0')"></td> 
+<td id="x14y1" class='board' onclick="depositLetter('x14y1')"></td> 
+<td id="x14y2" class='board' onclick="depositLetter('x14y2')"></td> 
+<td id="x14y3" class='board' onclick="depositLetter('x14y3')"></td> 
+<td id="x14y4" class='board' onclick="depositLetter('x14y4')"></td> 
+<td id="x14y5" class='board' onclick="depositLetter('x14y5')"></td> 
+<td id="x14y6" class='board' onclick="depositLetter('x14y6')"></td> 
+<td id="x14y7" class='board' onclick="depositLetter('x14y7')"></td> 
+<td id="x14y8" class='board' onclick="depositLetter('x14y8')"></td> 
+<td id="x14y9" class='board' onclick="depositLetter('x14y9')"></td> 
+<td id="x14y10" class='board' onclick="depositLetter('x14y10')"></td> 
+<td id="x14y11" class='board' onclick="depositLetter('x14y11')"></td> 
+<td id="x14y12" class='board' onclick="depositLetter('x14y12')"></td> 
+<td id="x14y13" class='board' onclick="depositLetter('x14y13')"></td> 
+<td id="x14y14" class='board' onclick="depositLetter('x14y14')"></td> 
+</tr>
+</table>
+<!-- </div> -->
+<div id="legalAlert" style="margin-left: auto; margin-right: auto; color: white; font-size:14px"></div>
+
+<table id="handLettersTable">
+  <tr>
+    <td id="handLetters0" class='handLetters' onclick="activateLetter(0)"></td>
+    <td id="handLetters1" class='handLetters' onclick="activateLetter(1)"></td>
+    <td id="handLetters2" class='handLetters' onclick="activateLetter(2)"></td>
+    <td id="handLetters3" class='handLetters' onclick="activateLetter(3)"></td>
+    <td id="handLetters4" class='handLetters' onclick="activateLetter(4)"></td>
+    <td id="handLetters5" class='handLetters' onclick="activateLetter(5)"></td>
+    <td id="handLetters6" class='handLetters' onclick="activateLetter(6)"></td>
+    <td id="handLetters7" class='handLetters' onclick="activateLetter(7)"></td>
+  </tr>
+</table>
+<!-- <div id="scrabblecadabra"></div>
+<input type="button" class="buttons" id="startGame" value="Start Game" onclick="startGame()"> -->
+<input type="button" class="buttons" id="computer" value="computer" onclick="PCvPC()">
+<!-- <input type="button" class="buttons" id="submit" value="submit" onclick="submit(workingBoard, masterBoard)"> -->
+<input type="button" class="buttons" id="shuffleLetters" value="Shuffle Letters" onclick="shuffleLetters(userHand)">
+<!-- <input type="button" class="buttons" id="randomMultipliers" value="Random Multipliers" onclick="AITurn()"> -->
+<!-- <input type="button" class="buttons" id="standardMultipliers" value="Standard Multipliers" onclick="standardizeMultipliers()"> -->
+<!-- <input type="button" class="buttons" id="getAnagrams" value="Get Anagrams" onclick="userAnagrams()"><br> -->
+
+
+<div id="userScore" style="float:right; margin-top: auto; margin-bottom: auto; color:white; font-size:45px">Mac: 0</div>
+<div id="macScore" style="float:right; margin-top: auto; margin-bottom: auto; color:white; font-size:45px">PC: 0</div>
+<div id="anagrams" style="float:left; color:white; font-size:25px"></div>
+ <div id="twoLevelDictionary"></div>
+<script>
+
+
+
+ 
+
+function addStealSpaces(){
+  var stealMode = true;
+  var diff;
+  var requestedSpaces = $('#stealSpaceRequest').val();
+  if (requestedSpaces > (boardLength-2)){ 
+  } else { 
+    while (stealSpaces.size < requestedSpaces){
+      stealR = stealPoolR.splice(0,1);
+      for (var i = 0; i < stealPoolC.length; i++){
+        if (multiplierHash[stealR][stealPoolC[i]] == undefined){
+          stealC = stealPoolC.splice(i,1);
+          break;
+        }
+      }
+      stealSpaces.set(stealR, stealC);
+      $(`#x${stealR}y${stealC}`).css("backgroundColor", "pink").text('Steal');
+    } 
+    diff = stealSpaces.size - requestedSpaces;
+    for (let [R,C] of stealSpaces){
+      if (diff){
+        $(`#x${R}y${C}`).css("backgroundColor", "#401b19").text('');
+        stealPoolR.push(R);
+        stealPoolC.push(C);
+        stealSpaces.delete(R);
+        diff--;
+      }
+    }    
+  }
+}
+
+
+function AIChangeSquareCSS(id){
+  $(id).css({"background-color": "black"});
+  // $('id').css({"background-color": "red"});
+}
+// function standardizeMultipliers(){
+//   //clearMultipliers();
+//   multiplierHash = multiplierHashPlaceholder;
+//   for (var i = 0; i < 15; i++){
+//     for (var key in multiplierHash[i]){    
+//       if (multiplierHash[i][key] == 'tripleWord'){ $(`#x${i}y${key}`).addClass('tripleWord').text('3W'); }
+//       if (multiplierHash[i][key] == 'tripleLetter'){ $(`#x${i}y${key}`).addClass('tripleLetter').text('3L'); }
+//       if (multiplierHash[i][key] == 'doubleLetter'){ $(`#x${i}y${key}`).addClass('doubleLetter').text('2L'); }
+//       if (multiplierHash[i][key] === 'doubleWord'){ $(`#x${i}y${key}`).addClass('doubleWord').text('2W'); }
+//     } 
+//   }
+// }
+
+function standardizeMultipliers(){
+  //clearMultipliers();
+  multiplierHash = multiplierHashPlaceholder;
+  for (var i = 0; i < 15; i++){
+    for (var key in multiplierHash[i]){  
+      if (multiplierHash[i][key] == 'tripleWord'){ $(`#x${i}y${key}`).css({"backgroundColor": "purple"}).text('3W');}
+      //  "box-shadow": "1px 0px 15px 5px purple"})
+      if (multiplierHash[i][key] == 'tripleLetter'){ $(`#x${i}y${key}`).css({"backgroundColor": "turquoise"}).text('3L');}
+      //  "box-shadow": "1px 0px 15px 5px turquoise"}).text('3L');}
+      if (multiplierHash[i][key] == 'doubleLetter'){ $(`#x${i}y${key}`).css({"backgroundColor": "lightgreen"}).text('2L');}
+     //   "box-shadow": "1px 0px 15px 5px lightgreen"}).text('2L');}
+      if (multiplierHash[i][key] === 'doubleWord'){ $(`#x${i}y${key}`).css({"backgroundColor": "pink"}).text('2W');}
+       // "box-shadow": "1px 0px 15px 5px pink"}).text('2W');}
+    }
+  }
+}
+function clearMultipliers(){
+  for (var i = 0; i < 15; i++){
+    for (var key in multiplierHash[i]){
+      if ((i === 7 && key === 7) || $(`#x${i}y${key}`).text() === 'Steal'){ continue; }   
+      if (multiplierHash[i][key] == 'tripleWord'){ $(`#x${i}y${key}`).css("backgroundColor", "#401b19").text('');}
+      if (multiplierHash[i][key] == 'tripleLetter'){ $(`#x${i}y${key}`).css("backgroundColor", "#401b19").text('');}
+      if (multiplierHash[i][key] == 'doubleLetter'){ $(`#x${i}y${key}`).css("backgroundColor", "#401b19").text('');}
+      if (multiplierHash[i][key] === 'doubleWord'){ $(`#x${i}y${key}`).css("backgroundColor", "#401b19").text('');}
+    }
+  }
+}
+
+function randomizeMultipliers(){
+  generatedMultipliers = true;
+  clearMultipliers();
+  let newKeys = shuffle(rand);
+  for (var i = 0; i < rand.length; i++){
+    shuffledMultiplierHash[i] = multiplierHash[newKeys[i]];
+  }
+  for (var i = 0; i < 15; i++){
+    for (var key in shuffledMultiplierHash[i]){ 
+      if (shuffledMultiplierHash[i][key] == 'tripleWord'){ $(`#x${i}y${key}`).css("backgroundColor", "red").text('3W');
+      } else if (shuffledMultiplierHash[i][key] == 'tripleLetter'){ $(`#x${i}y${key}`).css("backgroundColor", "green").text('3L');
+      } else if (shuffledMultiplierHash[i][key] == 'doubleLetter'){ $(`#x${i}y${key}`).css("backgroundColor", "lightgreen").text('2L');
+      } else if (shuffledMultiplierHash[i][key] === 'doubleWord'){ $(`#x${i}y${key}`).css("backgroundColor", "orange").text('2W');
+      } 
+    }
+  }
+  multiplierHashPlaceholder = multiplierHash;
+  multiplierHash = shuffledMultiplierHash;
+}
+
+
+
+
+
+
+
+
+// It's hard to actually see if the bgcolor has changed but I'm alerting it
+// Straight after you change the AI's played tiles' bgcolor to black, it's black
+// However, after it's taken it's turn, when I look at the bgcolor of those tiles in the console, it's either the color of the multiplier or the color of a steal space
+// Ohh. it seems you set everything to that color in clearMultipliers
+// Katie Kermode
+// Anyway what I've done is aleted the bgcolor later in that fn
+// It reverts back to its color within a few lines...
+// Katie Kermode
+// No ignore that
+// it does revert, but I cannot see where
+// Katie Kermode
+// Forgot to tell you - last night i did 30 Names in 39.29
+// Peg words again.. but not sure if I should risk that at the weekends
+// Katie Kermode
+// What I might try to do is “step through” the code
+// This is something we did a lot when I worked in IT
+// In your debugging environment (the Console in  this case because scrabbladabra is a webpage) you set a “breakpoint”
+// In the Console there should be a tab that shows you your code, and depending on your browser there will be some way to set a breakpoint on any line(s) of code you like
+// Then you refresh the page as normal and when it reaches that line of code, it will “break” (stop executing), and you can go to that code tab in the Console, and the line on which you set the breakpoint will be highlighted
+// Then there should be an option to “step through”, which means advancing the execution line by line. Very handy if you want to track a variable
+// Katie Kermode
+// Ok. Setting a breakpoint on line 1056, the one you marked “does not work”
+
+// In Firefox it's the Debugger tab, and I right-clicked on line 1056 and chose Add Breakpoint
+// Also added this line in Watch Expressions
+// $("#x7y6").css("backgroundColor")
+// Katie Kermode
+// This is good, so I’m stepping through line by line now... I’m seeing it change the bg color of each space the AI is playing on, first to red then to black, then it adds the tile
+// In Watch Expressions, I can see that the tile I’m looking at still has a black bg
+// Ok it’s played the word, it’s updating Mac’s score etc
+// Still watching that bg color
+// It actually stayed black. This is a horizontal word. But the AI’s previous word was vertical and those all reverted to brown
+// Will set breakpoints on the vertical one too
+// Argh. No when I resumed the execution it reverted, even though it didn’t seem to be going through any fns
+// Katie Kermode
+// The submit fn finishes, the bg is still black
+// But something happens in the onclick after submit
+// And I can’t see where or how
+// Or after the onclick
+// Katie Kermode
+// I don’t really understand it but it’s because you have a stylesheet that sets the colours for the “board” class. Don’t know why the border remains changed and the background colours don’t
+// However.. What you can do, and should do really, is create a class for those “played” squares
+// This works 😀
+// So I created a new class at the top, just below .board {..}:
+
+// .boardPlayed {
+//   background-color: black;
+
+// }
+// Then on those lines in AIPlay.. where you set the background colour to black, I commented out that line and created a new line like this:
+// $(#x${userC+count}y${userR}).addClass("boardPlayed");
+// $(#x${userC+count}y${userR}).addClass("boardPlayed");
+// didn't mean to send that twice
+// OK so all this does is add that class "boardPlayed" to that <td>, which makes its bg color black
+// and it doesn't revert
+// :D
+// OK I'm going to work now xD
+// WED 7:44AM
+
+// Ransu-chan
+// wow
+// I should have sent you my most recent file
+// I actually tried this method
+// $(#x${userC+count}y${userR}).addClass("boardPlayed");
+// sort of
+// it didn't work at all
+// and I didn't add the classes there, I added them in the standardizeMultipliers fn
+// instead of colors
+// because I thought they'd be easier to overwrite
+// Katie Kermode
+// Ok, well this worked for the black background
+// Ransu-chan
+// thanks so much, I don't understand really
+// but I just woke up
+// Katie Kermode
+// :)
+// Ransu-chan
+// and I just want to get the tiles
+// in there
+// first
+// the code I mean, for the color, bc I have a new color scheme and I think it'll look really good now
+// with the black bg
+// Katie Kermode
+// Do you want me to explain exactly where I put it, or have you got it
+// Cos I have to go and pick up my car in a minute
+// Ransu-chan
+// yeah cna you
+// I can't tell if this works
+// bc the new color scheme, things are messed up 😞  like I can't zoom in on the board or else it scrunches horizontally
+// but I can see this isn't working on the colored tiles
+// so probably not the others either
+// Katie Kermode
+// OK in the CSS at the top
+// under the board class
+// Ransu-chan
+// I guess I can redo it all
+// Katie Kermode
+// I added this class
+// .boardPlayed{
+//   background-color: black;
+//   }
+// Ransu-chan
+// ok me too
+// Katie Kermode
+// Then in userPlayWord...
+// Instead of the line that changes the bg color to black, I did this:
+// Ransu-chan
+// that's where I added the .addClaa()
+// twice
+// Katie Kermode
+// $(#x${userC+count}y${userR}).addClass("boardPlayed");
+// Ransu-chan
+// hten twice under aiplay word
+// Katie Kermode
+// and then similar for the vertical
+// yeah
+
+
+
+//the function must
+
+function getBreakIndices(board){
+  var hash = {};
+  for (var i = 0; i < board.length; i++){
+      
+  }
+}
+</script>
+</body>
+</html>
+
+
+
